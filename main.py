@@ -15,7 +15,7 @@ def execution():
     """
 	try:
 		#Inputs
-		original_image, file_name = inputs()
+		original_image, file_name, output_width, output_height = inputs()
 		#Optionnal Resizing:
 		while True:
 			choice = int(input("Do you want to keep the original image size or resize the image :\n1) keep original image\n2) Resize the image\n: "))
@@ -25,7 +25,7 @@ def execution():
 				matrix = matrix_creation(original_image)
 				break
 			elif int(choice) == 2:
-				resized_image = resize_image(original_image)
+				resized_image, output_width, output_height = resize_image(original_image)
 				#Pixel Brightness Values Matrix Creation
 				matrix = matrix_creation(resized_image)
 				break
@@ -33,6 +33,7 @@ def execution():
 		ascii_matrix = convert_to_ascii(matrix)
 		#Saving the ASCII matrix to the file
 		save_ascii_to_file(ascii_matrix,file_name)
+		txt_to_image(output_width, output_height, file_name)
 		print(f"Image converted to ASCII successfully!")
 	except Exception as e:
 		print(f"Error : {e}")

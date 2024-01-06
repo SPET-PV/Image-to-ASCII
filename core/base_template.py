@@ -18,7 +18,7 @@ Functions:
             - Prompts the user to choose between resizing based on aspect ratio or by a percentage reduction.
             - Validates the input and performs the resizing operation accordingly.
             - Returns the resized image object.
-
+    
     4. convert_to_ascii(matrix: list) -> list:
         - Converts pixel brightness values to ASCII symbols representing a gradient of shades.
         - Parameters:
@@ -30,26 +30,34 @@ Functions:
         - Parameters:
             - ascii_matrix (list of strings): ASCII matrix representing the image.
             - file_name (str): Name of the output text file.
+
+    6. txt_to_image(output_width: int, output_height: int, file_name: str):
+        - Converts the content of a text file into an image
+        - Parameters:
+            - output_width (int): Width of the output image.
+            - output_height (int): Height of the output image.
+            - file_path (str): the file path of the .txt file.
 """
 
-from PIL import Image, ImageFilter
+from PIL import Image, ImageFilter, ImageDraw, ImageFont
 
-def inputs() -> (Image.Image, str):
+def inputs() -> (Image.Image,str, int, int):
     """
     Prompts the user to input an image path and an output file path.
     Opens the specified image file and creates an output file.
-    :return: Tuple containing the opened image object, the output file path.
-    :rtype: tuple (PIL.Image.Image, str, tuple)
+    :return: Tuple containing the opened image object, the output file path and the size of the image.
+    :rtype: tuple (PIL.Image.Image, str, int, int)
     """
     # Open an image file
     while True:
-        image_path = input("Input the image path: ")
+        image_path = input("Input the image path: ").replace(" ", "")
         try:
             if image_path.lower().endswith(('.jpg', '.jpeg', '.tiff', '.bmp', '.png', '.webp')):
                 img = Image.open(image_path)
+
                 max_pixels = 89478485  # Maximum number of pixels allowed
-                width, height = img.size
-                if width * height > max_pixels:
+                output_width, output_height = img.size
+                if output_width * output_height > max_pixels:
                     raise ValueError(f"The image exceeds the maximum pixel limit of {max_pixels}. Please use a smaller image.")
                 break
             else:
@@ -58,7 +66,7 @@ def inputs() -> (Image.Image, str):
             print(f"Cannot open the image. Retry... \nError: {e}")
     #Create a file
     while True:
-        file_name = str(input("Input the output file path and name: "))
+        file_name = str(input("Input the output file path and name: ")).replace(" ", "")
         try:
             if file_name.lower().endswith('.txt'):
                 with open(file_name, 'w') as file:
@@ -71,7 +79,7 @@ def inputs() -> (Image.Image, str):
         except Exception as e:
             print(f"Cannot create the file, Retry... \nError : {e}")
     
-    return img, file_name
+    return img, file_name, output_width, output_height
 
 def resize_image(image: Image) -> Image:
     """
@@ -80,9 +88,9 @@ def resize_image(image: Image) -> Image:
     It then validates the input and performs the resizing operation accordingly.
 
     :param image: Original image object.
-    :type image_path: str
-    :return: Resized image object.
-    :rtype: PIL.Image.Image
+    :type image: Image
+    :return: Resized image object with it's Height and Width.
+    :rtype: tuple(PIL.Image.Image, int, int)
     """
     while True:
         try:
@@ -120,10 +128,9 @@ def resize_image(image: Image) -> Image:
                 # Resize the image by the calculated dimensions
                 resized_image = image.resize((output_width, output_height), Image.LANCZOS)
             # Return the resized image
-            return resized_image
+            return resized_image, output_width, output_height
         except ValueError as e:
             print(f"Error: {e}. Please enter valid inputs.")
-            # Continue the loop to re-ask for correct input
 
 def matrix_creation(image: Image) -> list:
     """
@@ -177,3 +184,38 @@ def save_ascii_to_file(ascii_matrix: list, file_name: str):
     with open(file_name, 'w') as file:
         for row in ascii_matrix:
             file.write(''.join(row) + '\n')
+
+#TODO : FIX TXT_TO_IMAGE FEATURE
+def txt_to_image(output_width: int, output_height: int, file_name: str):
+    """
+    Converts the content of a text file into an image.
+
+    Args:
+    - output_width (int): Width of the output image.
+    - output_height (int): Height of the output image.
+    - file_path (str): the file path of the .txt file.
+
+    Saves the output image as 'PATH.png'.
+    """
+    with open(file_name, 'r') as file:
+        text_content = file.read()
+    # Define image properties
+    text_color = (0, 0, 0)  # Black color for text
+    background_color = (255, 255, 255)  # White color for background
+    # Create a blank image
+    image = Image.new('RGB', (output_width, output_height), background_color)  # Adjust height as needed
+    draw = ImageDraw.Draw(image)
+    # Choose a font
+    font = ImageFont.load_default()  # You can specify a different font if needed
+    # Get the text size using the font
+    text_width, text_height = draw.textsize(text_content, font=font)
+    # Calculate text position
+    text_position = ((output_width - text_width) / 2, 10)  # Center the text horizontally, 10 pixels from the top
+    # Draw text on the image
+    draw.rectangle([text_position, (text_position[0] + text_width, text_position[1] + text_height)],
+                fill=background_color)
+    draw.text(text_position, text_content, fill=text_color, font=font)
+    # Define the output file path
+    output_file_path = file_name[:-4] + ".png"
+    # Save the image
+    image.save(output_file_path)
