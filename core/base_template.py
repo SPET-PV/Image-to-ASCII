@@ -186,6 +186,7 @@ def save_ascii_to_file(ascii_matrix: list, file_name: str):
             file.write(''.join(row) + '\n')
 
 #TODO : FIX TXT_TO_IMAGE FEATURE
+#!Error : AttributeError: 'ImageDraw' object has no attribute 'textsize'
 def txt_to_image(output_width: int, output_height: int, file_name: str):
     """
     Converts the content of a text file into an image.
