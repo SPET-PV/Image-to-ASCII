@@ -6,7 +6,7 @@ Converts images into ASCII art representations.
 - [Overview](#overview)
 - [Features](#features)
 - [Installation](#installation)
-- [Dependencies](#dependencies)
+- [Versions](#versions)
 - [Usage](#usage)
 - [License](#license)
 
@@ -16,9 +16,9 @@ This Python project is designed to convert images into ASCII art. It takes an im
 
 ## Features
 
-- Image to ASCII Conversion: Convert multiple image formats (JPEG,PNG,BMP,TIFF,WebP) into ASCII symbols representations.
-- Resizing Options: Choose to keep the original image size or resize based on aspect ratio or percentage reduction.
-- Text File Output: Save the ASCII art as a text file for easy viewing and sharing.
+- **Image to ASCII Conversion :** Convert multiple image formats (JPEG,PNG,BMP,TIFF,WebP) into ASCII symbols representations.
+- **Resizing Options :** Choose to keep the original image size or resize based on aspect ratio or percentage reduction.
+- **Text File Output :** Save the ASCII art as a text file for easy viewing and sharing.
 
 ## Installation
 
@@ -34,7 +34,7 @@ This Python project is designed to convert images into ASCII art. It takes an im
     pip install -r requirements.txt
     ```
 
-## Dependencies & Versions
+## Versions
 
 - [Python (3.11.2)](https://www.python.org/downloads/release/python-3112/)
 - [Pillow "PIL" (10.2.0) (Python Imaging Library)](https://pypi.org/project/pillow/)
